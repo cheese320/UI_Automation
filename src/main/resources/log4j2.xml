@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--log level priority: OFF > FATAL > ERROR > WARN > INFO > DEBUG > TRACE > ALL -->
+<Configuration status="WARN" monitorInterval="60">
+    <Properties>
+        <Property name="log_base_dir">${sys:user.dir}/testResult/logs/ui_test</Property>
+        <Property name="log_pattern">[%d{yyyy-MM-dd HH:mm:ss.SSS}][%-5p][%T][%c.%M:%L] %msg%xEx%n</Property>
+        <Property name="max_single_file_size">1MB</Property>
+    </Properties>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <ThresholdFilter level="DEBUG" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${log_pattern}"/>
+        </Console>
+
+        <RollingFile name="InfoLogRollingFile" fileName="${log_base_dir}/ui_test_info.log"
+                     filePattern="${log_base_dir}/$${date:yyyy_MM_dd}/ui_test_info_%d{yyyy_MM_dd_HH}_%i.log.gz">
+            <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${log_pattern}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="${max_single_file_size}"/>
+            </Policies>
+            <DefaultRolloverStrategy fileIndex="nomax">
+                <Delete basePath="${log_base_dir}" maxDepth="2">
+                    <IfFileName glob="*/ui_test_info_*.log.gz">
+                        <IfAny>
+                            <IfAccumulatedFileSize exceeds="8MB"/>
+                            <IfAccumulatedFileCount exceeds="5"/>
+                            <IfLastModified age="9m"/>
+                        </IfAny>
+                    </IfFileName>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+
+        <RollingFile name="WarnLogRollingFile" fileName="${log_base_dir}/ui_test_warn.log"
+                     filePattern="${log_base_dir}/$${date:yyyy_MM_dd}/ui_test_warn_%d{yyyy_MM_dd_HH}_%i.log.gz">
+            <ThresholdFilter level="WARN" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${log_pattern}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="${max_single_file_size}"/>
+            </Policies>
+            <DefaultRolloverStrategy fileIndex="nomax">
+                <Delete basePath="${log_base_dir}" maxDepth="2">
+                    <IfFileName glob="*/ui_test_warn_*.log.gz">
+                        <IfAny>
+                            <IfAccumulatedFileSize exceeds="3GB"/>
+                            <IfAccumulatedFileCount exceeds="3000"/>
+                            <IfLastModified age="30d"/>
+                        </IfAny>
+                    </IfFileName>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+
+        <RollingFile name="DebugLogRollingFile" fileName="${log_base_dir}/ui_test_debug.log"
+                     filePattern="${log_base_dir}/$${date:yyyy_MM_dd}/ui_test_debug_%d{yyyy_MM_dd_HH}_%i.log.gz">
+            <ThresholdFilter level="DEBUG" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${log_pattern}" charset="UTF-8"/>
+
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="false"/>
+                <SizeBasedTriggeringPolicy size="${max_single_file_size}"/>
+            </Policies>
+
+            <DefaultRolloverStrategy fileIndex="nomax">
+                <Delete basePath="${log_base_dir}" maxDepth="2">
+                    <IfFileName glob="*/ui_test_debug_*.log.gz">
+                        <IfLastModified age="9m">
+                            <IfAny>
+                                <IfAccumulatedFileSize exceeds="2MB"/>
+                                <IfAccumulatedFileCount exceeds="2"/>
+                            </IfAny>
+                        </IfLastModified>
+                    </IfFileName>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+
+        <RollingFile name="ErrorLogRollingFile" fileName="${log_base_dir}/ui_test_error.log"
+                     filePattern="${log_base_dir}/$${date:yyyy_MM_dd}/ui_test_error_%d{yyyy_MM_dd_HH}_%i.log.gz">
+            <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${log_pattern}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="${max_single_file_size}"/>
+            </Policies>
+            <DefaultRolloverStrategy fileIndex="nomax">
+                <Delete basePath="${log_base_dir}" maxDepth="2">
+                    <IfFileName glob="*/ui_test_error_*.log.gz">
+                        <IfAny>
+                            <IfAccumulatedFileSize exceeds="3GB"/>
+                            <IfAccumulatedFileCount exceeds="3000"/>
+                            <IfLastModified age="30d"/>
+                        </IfAny>
+                    </IfFileName>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+
+
+    </Appenders>
+
+
+    <Loggers>
+
+        <Root level="ALL">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="InfoLogRollingFile"/>
+            <AppenderRef ref="WarnLogRollingFile"/>
+            <AppenderRef ref="DebugLogRollingFile"/>
+            <AppenderRef ref="ErrorLogRollingFile"/>
+        </Root>
+    </Loggers>
+</Configuration>
