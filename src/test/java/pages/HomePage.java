@@ -6,13 +6,12 @@ import Utils.TestInit;
 
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
 
 public class HomePage extends TestInit {
-    public HomePage() {}
-
     /**
      * Elements
      */
@@ -41,7 +40,7 @@ public class HomePage extends TestInit {
         searchBox.sendKeys(searchText);
         searchBox.sendKeys(Keys.ENTER);
         logger.info("search \"" + searchText + "\"");
-        takeSnapShot();
+        takeScreenshot();
     }
 
     //navigate to trade page
@@ -53,13 +52,13 @@ public class HomePage extends TestInit {
             e.printStackTrace();
         }
         logger.info("navigate to TradePage");
-        takeSnapShot();
+        takeScreenshot();
     }
 
     //assert search result
     public void assertSearchResult(String expect){
         String actual = driver.getCurrentUrl();
-        assertStr(actual, expect);
+        assertStrEqual(actual, expect);
     }
 
 

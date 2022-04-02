@@ -30,11 +30,16 @@ public abstract class TestInit {
         actions = new Actions(driver);
     }
 
+  /*  public WebDriver getDriver(){
+        return driver;
+    }*/
+
     //navigate to home page
     protected void navigateToHomePage(){
         logger.info("open Home page.");
         driver.get(ReadConfigFile.getInstance().getHomeURL());
-        PageFactory.initElements(new AjaxElementLocatorFactory(driver, 5),this);
+        //driver.manage().window().maximize();
+        PageFactory.initElements(new AjaxElementLocatorFactory(driver, 20),this);
     }
 
 
@@ -66,36 +71,60 @@ public abstract class TestInit {
         ((JavascriptExecutor) driver).executeScript(script, element);
     }
 
+    //switch to new window
+    protected void switchToNewWindow(){
+        String currWinHandle = driver.getWindowHandle();
+        driver.close();
+        driver.getWindowHandles().forEach(winHandle -> {
+            if(!winHandle.equals(currWinHandle)){
+                driver.switchTo().window(winHandle);
+            }
+        });
+    }
 
     /**
      * Assert
      */
-    //assert String
-//    protected void assertStr(String actual, String expect){
-//        try{
-//            Assert.assertEquals(actual, expect);
-//            logger.info("Actual result /[" + actual + "/] matches with expectedd result : /[" + expect + "/]" );
-//        } catch (AssertionError e){
-//            logger.error("Actual result /[" + actual + "/] does not match with expectedd result : /[" + expect + "/]" );
-//        }
-//    }
-
-
-    //assert string
-    protected void assertStr(String actual, String expect){
-        Assert.assertEquals(actual, expect);
+    //assert string equals
+    protected void assertStrEqual(String actual, String expect){
         logger.info("expect result : " + expect);
         logger.info("actual result : " + actual);
+        Assert.assertEquals(actual, expect);
+    }
+
+    //assert string contains
+    protected void assertStrContains(String actual, String expect){
+        logger.info("expect result : " + expect);
+        logger.info("actual result : " + actual);
+        Assert.assertTrue(actual.contains(expect));
+    }
+
+    //assertEqual int
+    protected void assertEqualInt(int actual, int expect){
+        logger.info("expect result : " + expect + "; actual result : " + actual);
+        Assert.assertEquals(actual, expect);
+    }
+
+    //assertMoreThan int
+    protected void assertMoreThanInt(int actual, int benchmark){
+        logger.info("benchmark : " + benchmark + "; actual result : " + actual);
+        Assert.assertTrue(actual>benchmark);
+    }
+
+    //assertLessThan int
+    protected void assertLessThanInt(int actual, int benchmark){
+        logger.info("benchmark : " + benchmark + "; actual result : " + actual);
+        Assert.assertTrue(actual<benchmark);
     }
 
     /**
      * Snapshot
      */
-    //take snapshot
-    protected void takeSnapShot() {
+    //take screenshot
+    protected void takeScreenshot() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         String date = sdf.format(new Date());
-        String screenshotFilePath = System.getProperty("user.dir")+"//testResult//snapshots//" + date + ".png";
+        String screenshotFilePath = System.getProperty("user.dir")+"//screenshots//" + date + ".png";
 
         try{
             if(driver instanceof  TakesScreenshot){
@@ -111,6 +140,25 @@ public abstract class TestInit {
         }
     }
 
+    protected String takeScreenshot(String methodName) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        String date = sdf.format(new Date());
+        String screenshotFilePath = System.getProperty("user.dir")+"//testResult//screenshots//" + methodName + date + ".png";
+
+        try{
+            if(driver instanceof  TakesScreenshot){
+                TakesScreenshot screenshot = ((TakesScreenshot) driver);
+                File SrcFile = screenshot.getScreenshotAs(OutputType.FILE);
+
+                File destFile = new File(screenshotFilePath);
+                FileUtils.copyFile(SrcFile,destFile);
+                logger.info("Snapshot captured " + screenshotFilePath);
+            }
+        } catch (Exception e){
+            throw new RuntimeException("Failed to capture snapshot");
+        }
+        return screenshotFilePath;
+    }
 
     /**
      * Tear down

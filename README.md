@@ -32,14 +32,17 @@ git@github.com:cheese320/UI_Automation.git
 |                 | Data-driven                 | Done   |
 |                 | TestNG                      | Done   |
 |                 | Log4j                       | Done   |
-| Functionality   | Press Shift                 | Done   |
+|                 | Extent Report               | Done   |
+| Functionality   | Retry                       | Done   |
+|                 | Press Shift                 | Done   |
 |                 | Release Shift               | Done   |
 |                 | Hover                       | Done   |
 |                 | Drag and Drop               | Done   |
 |                 | js script execution         | Done   |
 |                 | take snapshot               | Done   |
-
-
+|                 | switch to window            | Done   |
+|                 | drop down list              | Done   |
+|                 | alert                       | Done   |
 
 ## Test Architecture
 
@@ -48,11 +51,4 @@ git@github.com:cheese320/UI_Automation.git
 3. testDate : ~/src/test/java/testData
 4. test cases : ~/src/test/java/testCases
 5. test execution : right click testng.xml and select "Run" 
-6. test report: ~/test-output/emailable-report.html
-
-
-
-## TODO
-
-1. more functionality to be automated, e.g., frame, window handler, alert etc.
-2. customize test report
+6. test report: ~/extentReports

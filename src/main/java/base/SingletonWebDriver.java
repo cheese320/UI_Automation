@@ -8,6 +8,10 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
+
+import java.util.Collections;
+import java.util.concurrent.TimeUnit;
 
 
 public class SingletonWebDriver {
@@ -16,9 +20,7 @@ public class SingletonWebDriver {
     private static SingletonWebDriver instance;
 
 
-    private SingletonWebDriver(){
-        driver = createDriver();
-    }
+    private SingletonWebDriver(){driver=createDriver();}
 
     public static SingletonWebDriver getInstance(){
         if(instance==null){
@@ -29,10 +31,11 @@ public class SingletonWebDriver {
 
     //expose to user
     public WebDriver getDriver(){
+        driver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
         return driver;
     }
 
-    private static WebDriver createDriver(){
+    private WebDriver createDriver(){
         switch(driverType){
             case FIREFOX -> {
                 WebDriverManager.firefoxdriver().setup();
@@ -47,10 +50,17 @@ public class SingletonWebDriver {
                 WebDriverManager.chromedriver().setup();
                 DesiredCapabilities capabilities = DesiredCapabilities.chrome();
                 ChromeOptions chromeOptions = new ChromeOptions();
+                //chromeOptions.addArguments("--headless");
+                chromeOptions.addArguments("--start-maximized");
                 chromeOptions.addArguments("--verbose");
                 chromeOptions.addArguments("--whitelisted-ips=''");
+                //禁止显示“Chrome正在受到自动软件的控制”字样
+                //chromeOptions.addArguments("--disable-infobars");  //out of date
+                //chromeOptions.setExperimentalOption("userAutomationExtension",false);
+                chromeOptions.setExperimentalOption("excludeSwitches",new String[]{"enable-automation"});
                 capabilities.setCapability(ChromeOptions.CAPABILITY,chromeOptions);
-                driver = new ChromeDriver(chromeOptions);
+                driver = new ChromeDriver(capabilities);
+
             }
         }
         return driver;
