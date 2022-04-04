@@ -2,7 +2,11 @@ package testCases;
 
 import Utils.Listeners.Retry;
 import Utils.TestInit;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.*;
 import pages.BaiduSearch;
 import pages.BaiduSetup;
@@ -25,15 +29,12 @@ public class testBaiduCntItem extends TestInit {
         baiduSetup = new BaiduSetup();
         baiduSearch = new BaiduSearch();
         baiduSetup.clickableSetup(baiduSetup.btnSetup, baiduSetup.seachOption, baiduSetup.twenTy);
-        //避免跳出百度安全验证
-        Thread.sleep(2000);
         baiduSetup.saveSetup();
 
         //搜索”沉思录“
         String str = "沉思录";
-        //String str = "录音笔";
         baiduSearch.searchTXT(str);
-        Thread.sleep(4000);
+        baiduSearch.waitSearchResult();
         baiduSearch.assertSearchResult(str);
 
         //百度所有返回结果计数
@@ -46,13 +47,18 @@ public class testBaiduCntItem extends TestInit {
 
         //百度正常搜索返回结果（包含百度夹带）计数
         int count = baiduSearch.searchResult.size();
-        Thread.sleep(2000);
+        baiduSearch.searchResult.forEach(x-> {
+            if(x.getText().contains("其他人还在搜")){
+                logger.info("出现“其他人还在搜”条目");
+            }
+        });
+        count = count-1;
         logger.info("返回搜索结果 " + count + "条记录");
         assertEqualInt(count,20);
     }
 
 
-    @AfterClass(description = "tear down")
+    @AfterTest(description = "tear down")
     public void quit(){
         tearDown();
     }

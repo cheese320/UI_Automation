@@ -18,7 +18,7 @@ public class testBaiduCheckTime  extends TestInit {
     }
 
     @Test(retryAnalyzer = Retry.class)
-    public void checkTime() throws Exception{
+    public void checkTime()  {
         //"高级搜索", 当天内容
         baiduSetup = new BaiduSetup();
         baiduSearch = new BaiduSearch();
@@ -29,17 +29,21 @@ public class testBaiduCheckTime  extends TestInit {
 
         //设置关键词”沉思录“, 保存设置
         String str = "沉思录";
-        //String str = "录音笔";
         baiduSetup.completeKey.sendKeys(str);
         baiduSetup.advancedSetupBtn.click();
 
         //搜索结果在新窗口打开，跳转新窗口
         switchToNewWindow();
-        Thread.sleep(2000);
+        baiduSearch.waitSearchResult();
         baiduSearch.timeOfSearchResult.forEach(x -> {
             //有时候返回的条目最前面不是时间信息
             if(x.getText().matches(".*\\d.*")){
-                assertLessThanInt(Integer.parseInt(x.getText().replaceAll("[\\D]","")),24);
+                int actual = 1;
+                String time = x.getText();
+                if(!time.contains("分钟")){
+                    actual = Integer.parseInt(time.replaceAll("[\\D]",""));
+                }
+                assertLessThanInt(actual,24);
             }
         });
     }

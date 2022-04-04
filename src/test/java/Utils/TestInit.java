@@ -114,7 +114,7 @@ public abstract class TestInit {
     //assertLessThan int
     protected void assertLessThanInt(int actual, int benchmark){
         logger.info("benchmark : " + benchmark + "; actual result : " + actual);
-        Assert.assertTrue(actual<benchmark);
+        Assert.assertTrue(actual<=benchmark);
     }
 
     /**

@@ -1,10 +1,13 @@
 package pages;
 
 import Utils.TestInit;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 
 import java.util.List;
@@ -73,4 +76,11 @@ public class BaiduSearch extends TestInit {
         String actual = driver.getTitle();
         assertStrContains(actual, searchTxt);
     }
+
+    //wait till search result present
+    public void waitSearchResult(){
+        WebDriverWait wait = new WebDriverWait(driver,2);
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[contains(@class,\"result c-container\")]")));
+    }
+
 }
